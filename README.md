@@ -49,8 +49,14 @@ the queues and the cache in the environment canvas on the dashboard:
   from its dropdown menu. The `/demo-timeout` endpoint dispatches to it; on Cloud a
   queue name must exist as a managed queue, and a paused queue holds jobs without
   processing them, which is exactly what that demo needs.
-- Add resource, Cache: Valkey, Flex 250 MB. The cache transports the task results
-  back to the caller (and holds the sessions).
+The cache can be created and attached from the CLI (it transports the task results
+back to the caller, and holds the sessions). Match the region to your environment,
+and take the cache id from the create output:
+
+```sh
+cpx laravel/cloud-cli cache:create --name=concurrency-cache --type=laravel_valkey --size=valkey-flex-250mb --region=us-east-2 --auto-upgrade-enabled=true --is-public=false --eviction-policy=noeviction
+cpx laravel/cloud-cli environment:update production --cache-id=<id> --force
+```
 
 Then set the environment variables and deploy:
 

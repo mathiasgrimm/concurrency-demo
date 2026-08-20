@@ -168,18 +168,20 @@ Route::get('/demo-exception-sync', $demo(function () {
     return response()->json(['error' => 'expected an exception to be thrown'], 500);
 }));
 
-// What a timeout looks like: the tasks go to a queue no worker consumes,
-// so after 3 seconds the caller gets a TaskTimedOutException with the
-// full diagnostic message. A cancellation flag is written, so even if a
-// worker consumes that queue later, the jobs will refuse to run.
+// What a timeout looks like: the tasks go to a queue no worker consumes
+// (pinned to the redis connection, since on Laravel Cloud every managed
+// queue name must exist), so after 3 seconds the caller gets a
+// TaskTimedOutException with the full diagnostic message. A cancellation
+// flag is written, so even if a worker consumes that queue later, the
+// jobs will refuse to run.
 Route::get('/demo-timeout', $demo(function () {
     try {
-        Concurrency::driver('queue')->onQueue('nobody-listens')->run([
+        Concurrency::driver('queue')->onConnection('redis')->onQueue('nobody-listens')->run([
             fn () => 'never collected',
             fn () => 'never collected',
         ], timeout: 3);
     } catch (TaskTimedOutException $e) {
-        Queue::connection()->clear('nobody-listens');
+        Queue::connection('redis')->clear('nobody-listens');
 
         return response()->json([
             'exception' => get_class($e),

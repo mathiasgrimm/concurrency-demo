@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "242f84b7101bd6240fbc0ba5576821ee",
+    "content-hash": "5ceb5fda9d5bc3f254bd6ea020826ce8",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -1207,7 +1207,7 @@
         },
         {
             "name": "laravel/framework",
-            "version": "dev-queue-concurrency-driver",
+            "version": "v13.26.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mathiasgrimm/framework.git",
@@ -8770,14 +8770,7 @@
             "time": "2025-11-17T20:03:58+00:00"
         }
     ],
-    "aliases": [
-        {
-            "package": "laravel/framework",
-            "version": "dev-queue-concurrency-driver",
-            "alias": "13.x-dev",
-            "alias_normalized": "13.9999999.9999999.9999999-dev"
-        }
-    ],
+    "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
         "laravel/framework": 20

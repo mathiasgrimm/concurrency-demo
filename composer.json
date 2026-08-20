@@ -3,12 +3,15 @@
     "name": "laravel/laravel",
     "type": "project",
     "description": "The skeleton application for the Laravel framework.",
-    "keywords": ["laravel", "framework"],
+    "keywords": [
+        "laravel",
+        "framework"
+    ],
     "license": "MIT",
     "require": {
         "php": "^8.3",
         "aws/aws-sdk-php": "^3.393",
-        "laravel/framework": "dev-queue-concurrency-driver as 13.x-dev",
+        "laravel/framework": "dev-queue-concurrency-driver || ^13.26",
         "laravel/horizon": "^5.48",
         "laravel/tinker": "^3.0"
     },

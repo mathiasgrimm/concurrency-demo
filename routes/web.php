@@ -189,7 +189,7 @@ Route::get('/demo-timeout', $demo(function () {
             'received' => $e->received,
             'total' => $e->total,
             'note' => 'The cancellation flag was written, so these jobs would refuse to run even if a worker picked them up later.',
-        ], 504);
+        ], 500);
     }
 
     return response()->json(['error' => 'expected a timeout'], 500);

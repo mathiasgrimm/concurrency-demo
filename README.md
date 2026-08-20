@@ -162,8 +162,8 @@ php artisan demo:concurrency
 ## The demos
 
 Every demo shows the route code that runs and the JSON response side by side.
-Jobs are tagged `concurrency` and `concurrency:{runId}` in Horizon, and a failing
-task appears under failed jobs as a `CapturedTaskException` wrapping the original.
+A failing task is recorded as a failed job, a `CapturedTaskException` wrapping
+the original exception, while the caller receives the original rebuilt.
 
 ### /demo
 

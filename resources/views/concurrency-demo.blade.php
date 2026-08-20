@@ -79,16 +79,6 @@
             margin-top: .15rem;
         }
 
-        .footnote {
-            margin-top: auto;
-            padding: .75rem;
-            font-size: .8rem;
-            color: var(--muted);
-            border-top: 1px solid var(--border);
-        }
-
-        .footnote a { color: var(--accent); }
-
         main {
             flex: 1;
             display: flex;
@@ -223,10 +213,6 @@
             <strong>/demo-benchmark</strong>
             <small>The same three 2s tasks on the <code>sync</code>, <code>process</code>, and <code>queue</code> drivers, wall times side by side. Takes around 10 seconds.</small>
         </button>
-
-        <div class="footnote">
-            Queue jobs are tagged <code>concurrency</code>.
-        </div>
     </aside>
 
     <main>

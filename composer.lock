@@ -1211,12 +1211,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/mathiasgrimm/framework.git",
-                "reference": "f42ad4b6d7dd47aed80acc34b3c359f2db0e6f98"
+                "reference": "d48eb6175ce5e8ac0f1d086cb5317b23e68bf010"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mathiasgrimm/framework/zipball/f42ad4b6d7dd47aed80acc34b3c359f2db0e6f98",
-                "reference": "f42ad4b6d7dd47aed80acc34b3c359f2db0e6f98",
+                "url": "https://api.github.com/repos/mathiasgrimm/framework/zipball/d48eb6175ce5e8ac0f1d086cb5317b23e68bf010",
+                "reference": "d48eb6175ce5e8ac0f1d086cb5317b23e68bf010",
                 "shasum": ""
             },
             "require": {

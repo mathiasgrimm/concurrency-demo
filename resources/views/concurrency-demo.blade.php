@@ -79,7 +79,7 @@
             margin-top: .15rem;
         }
 
-        .horizon {
+        .footnote {
             margin-top: auto;
             padding: .75rem;
             font-size: .8rem;
@@ -87,7 +87,7 @@
             border-top: 1px solid var(--border);
         }
 
-        .horizon a { color: var(--accent); }
+        .footnote a { color: var(--accent); }
 
         main {
             flex: 1;
@@ -186,7 +186,7 @@
 
         <button class="item" data-url="/demo">
             <strong>/demo</strong>
-            <small>Fan out to Redis queue workers. Run <code>php artisan horizon</code> first. Wall time stays close to the slowest task.</small>
+            <small>Fan out to queue workers. Wall time stays close to the slowest task, not the sum.</small>
         </button>
 
         <button class="item" data-url="/demo-sync">
@@ -196,7 +196,7 @@
 
         <button class="item" data-url="/demo-exception">
             <strong>/demo-exception</strong>
-            <small>A task throws on the worker. The exception is rebuilt in the caller and the job shows as failed in Horizon.</small>
+            <small>A task throws on the worker. The exception is rebuilt in the caller and the job is recorded as failed.</small>
         </button>
 
         <button class="item" data-url="/demo-exception-sync">
@@ -224,8 +224,8 @@
             <small>The same three 2s tasks on the <code>sync</code>, <code>process</code>, and <code>queue</code> drivers, wall times side by side. Takes around 10 seconds.</small>
         </button>
 
-        <div class="horizon">
-            Jobs are tagged <code>concurrency</code> in <a href="/horizon" target="_blank">Horizon</a>.
+        <div class="footnote">
+            Queue jobs are tagged <code>concurrency</code>.
         </div>
     </aside>
 

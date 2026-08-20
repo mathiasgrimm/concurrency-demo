@@ -87,7 +87,7 @@ Route::get('/demo', $demo(function () {
     ], timeout: 15);
 
     return response()->json([
-        'connection' => 'redis (parallel, wall time close to the slowest task)',
+        'connection' => config('queue.default').' (parallel, wall time close to the slowest task)',
         'caller_pid' => getmypid(),
         'wall_time_seconds' => round(microtime(true) - $start, 2),
         'results' => $results,
@@ -127,8 +127,8 @@ Route::get('/demo-sync', $demo(function () {
 }));
 
 // A task that throws on a queue worker: the exception is rebuilt and
-// rethrown here in the caller, and the failed job is also visible in
-// Horizon as a CapturedTaskException wrapping the original.
+// rethrown here in the caller, and it is also recorded as a failed job
+// (a CapturedTaskException wrapping the original).
 Route::get('/demo-exception', $demo(function () {
     try {
         Concurrency::driver('queue')->run([
@@ -137,11 +137,11 @@ Route::get('/demo-exception', $demo(function () {
         ], timeout: 15);
     } catch (Throwable $e) {
         return response()->json([
-            'connection' => 'redis',
+            'connection' => config('queue.default'),
             'caught_in_caller_pid' => getmypid(),
             'exception' => get_class($e),
             'message' => $e->getMessage(),
-            'note' => 'The failure is also recorded in Horizon under failed jobs.',
+            'note' => 'The failure is also recorded as a failed job.',
         ], 500);
     }
 
@@ -214,7 +214,7 @@ Route::get('/demo-defer', $demo(function () {
 
     return response()->json([
         'dispatched' => 'after this response is sent',
-        'note' => 'Requires Horizon running. Results are never collected with defer(); these tasks write cache markers instead. Each sleeps 2s, so with two or more workers the markers usually show two different pids. Check /demo-defer-status after a few seconds.',
+        'note' => 'Requires queue workers running. Results are never collected with defer(); these tasks write cache markers instead. Each sleeps 2s, so with two or more workers the markers usually show two different pids. Check /demo-defer-status after a few seconds.',
     ]);
 }));
 
@@ -261,7 +261,7 @@ Route::get('/demo-benchmark', $demo(function () {
         } catch (TaskTimedOutException $e) {
             $benchmark[$driver] = [
                 'wall_time_seconds' => round(microtime(true) - $start, 2),
-                'error' => 'Timed out. Is Horizon running?',
+                'error' => 'Timed out. Are queue workers running?',
             ];
         }
     }

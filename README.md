@@ -197,13 +197,3 @@ times side by side. One JSON response showing the same blocking contract with th
 execution models.
 
 ![The same three tasks on the sync, process, and queue drivers](screenshots/demo-benchmark.png)
-
-## Things worth trying
-
-- Stop Horizon and run `php artisan demo:concurrency --timeout=5`: you get a
-  `TaskTimedOutException` after 5 seconds, and the queued jobs will refuse to run
-  once a worker comes back (cancellation flag).
-- Runtime targeting: `Concurrency::driver('queue')->onQueue('images')->run([...])`
-  then start a worker with `php artisan queue:work --queue=images`.
-- Tinker: `php artisan tinker` then
-  `Concurrency::driver('queue')->run([fn () => getmypid(), fn () => getmypid()])`.

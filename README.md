@@ -27,36 +27,54 @@ gets on demand parallel compute from a small web instance.
 
 The [Cloud CLI](https://cloud.laravel.com/docs/cli) runs through
 [cpx](https://cpx.dev), so there is nothing to install globally (no cpx yet?
-`composer global require cpx/cpx`). Authenticate first:
+`composer global require cpx/cpx`). Authenticate and create the application:
 
 ```sh
 cpx laravel/cloud-cli auth
-```
-
-Create the application and its environment, then the managed queue and a cache. The
-queue is named `concurrency` so it matches `CONCURRENCY_QUEUE`, and the cache is what
-transports the task results back to the caller:
-
-```sh
 cpx laravel/cloud-cli ship
-cpx laravel/cloud-cli managed-queue:create production --name=concurrency --max-workers=20
-cpx laravel/cloud-cli cache:create
-cpx laravel/cloud-cli environment:variables
 ```
 
-Set `CACHE_STORE=redis` and `CONCURRENCY_QUEUE=concurrency` when the variables prompt
-opens, then deploy again so everything is picked up:
+`ship` creates the application and the production environment. On current CLI
+versions it can error after that when it reaches the database step; that is fine,
+the app and environment are already created and this demo does not use a database
+(sessions live in the cache).
+
+The CLI has not caught up with the current managed queues generation yet, so create
+the queues and the cache in the environment canvas on the dashboard:
+
+- Add compute, Managed queue: name `concurrency`, Flex 256 MiB, autoscaling 5 to 20
+  workers. The first managed queue becomes the environment default and matches
+  `CONCURRENCY_QUEUE`.
+- Add compute, Managed queue: name `nobody-listens`, smallest size, then pause it
+  from its dropdown menu. The `/demo-timeout` endpoint dispatches to it; on Cloud a
+  queue name must exist as a managed queue, and a paused queue holds jobs without
+  processing them, which is exactly what that demo needs.
+- Add resource, Cache: Valkey, Flex 250 MB. The cache transports the task results
+  back to the caller (and holds the sessions).
+
+Then set the environment variables and deploy:
 
 ```sh
-cpx laravel/cloud-cli deploy
+cpx laravel/cloud-cli environment:variables production --action=append --key=CACHE_STORE --value=redis --force
+cpx laravel/cloud-cli environment:variables production --action=append --key=SESSION_DRIVER --value=redis --force
+cpx laravel/cloud-cli environment:variables production --action=append --key=CONCURRENCY_DRIVER --value=queue --force
+cpx laravel/cloud-cli environment:variables production --action=append --key=CONCURRENCY_QUEUE --value=concurrency --force
+cpx laravel/cloud-cli deploy concurrency-demo production
 ```
 
 The managed queue sets `QUEUE_CONNECTION=cloud` for the environment on deploy, so the
-driver dispatches to it without further configuration. Two notes: Horizon does not
-support managed queues, so on Cloud you skip `horizon:listen` and the workers, metrics,
-and failed jobs live in the environment's Queues dashboard instead. And jobs on the
-Flex compute class should finish within 90 seconds, which fits the demo tasks and the
-driver's 60 second default timeout comfortably.
+driver dispatches to it without further configuration. A few notes:
+
+- Horizon does not support managed queues, so on Cloud you skip `horizon:listen`;
+  the workers, metrics, and failed jobs live in the environment's Queues dashboard.
+- Jobs on the Flex compute class should finish within 90 seconds, which fits the
+  demo tasks and the driver's 60 second default timeout comfortably.
+- Cloud validates the framework version for managed queues from `composer.lock`. The
+  committed lock records the fork as `v13.26.0` (the real version of the branch head,
+  pinned to the same commit) because the check cannot parse a dev branch name. If you
+  regenerate the lock, the deploy will fail that check again.
+- Optional tuning used by the live demo: scale to zero after 60 seconds on both the
+  app cluster and the cache, set in each card on the canvas.
 
 ## Local setup
 

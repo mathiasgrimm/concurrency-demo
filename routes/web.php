@@ -174,6 +174,31 @@ Route::get('/demo-exception-sync', $demo(function () {
 // TaskTimedOutException with the full diagnostic message. A cancellation
 // flag is written, so even if a worker consumes that queue later, the
 // jobs will refuse to run.
+Route::get('/demo-failover', $demo(function () {
+    // A failover connection whose primary link is unreachable, so the chain
+    // falls through to sync and the tasks run inline in this request. The point
+    // of the demo is the exception: a task that throws after the fall-through
+    // returns its own RuntimeException, not the queue's failure wrapper, and it
+    // runs exactly once even though a failover queue would ordinarily read a
+    // task failure as a dead link and retry it on the next connection.
+    try {
+        Concurrency::driver('queue')->onConnection('failover-demo')->run([
+            'ok' => fn () => 'this task succeeds after falling through to sync',
+            'boom' => fn () => throw new RuntimeException('Image conversion failed after the fall-through'),
+        ], timeout: 15);
+    } catch (Throwable $e) {
+        return response()->json([
+            'connection' => 'failover-demo (primary unreachable, fell through to sync)',
+            'caught_in_caller_pid' => getmypid(),
+            'exception' => get_class($e),
+            'message' => $e->getMessage(),
+            'note' => 'The original RuntimeException reaches the caller, not a CapturedTaskException: a task failing on a sync link is no longer read as a dead link.',
+        ], 500);
+    }
+
+    return response()->json(['error' => 'expected an exception to be thrown'], 500);
+}));
+
 Route::get('/demo-timeout', $demo(function () {
     try {
         Concurrency::driver('queue')->onQueue('nobody-listens')->run([

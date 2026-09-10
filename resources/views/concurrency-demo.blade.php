@@ -194,7 +194,12 @@
             <small>The same failing task inline on the sync connection.</small>
         </button>
 
-        <button class="item" data-url="/demo-timeout">
+        <button class="item" data-url="/demo-failover">
+            <strong>/demo-failover</strong>
+            <small>A <code>failover</code> chain whose primary is unreachable falls through to <code>sync</code>. A failing task returns its own <code>RuntimeException</code>, not the queue's failure wrapper, and runs once.</small>
+        </button>
+
+                <button class="item" data-url="/demo-timeout">
             <strong>/demo-timeout</strong>
             <small>Tasks go to a queue nobody consumes: after 3s the caller gets a <code>TaskTimedOutException</code> with a diagnostic message, and a cancellation flag stops the jobs from ever running.</small>
         </button>

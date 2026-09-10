@@ -89,6 +89,21 @@ return [
             ],
         ],
 
+        // A queue connection whose driver has no connector, so a failover chain
+        // treats it as an unreachable primary. The /demo-failover endpoint uses
+        // it to force the fall-through to sync without having to take Redis down.
+        'unavailable' => [
+            'driver' => 'unavailable-driver',
+        ],
+
+        'failover-demo' => [
+            'driver' => 'failover',
+            'connections' => [
+                'unavailable',
+                'sync',
+            ],
+        ],
+
     ],
 
     /*

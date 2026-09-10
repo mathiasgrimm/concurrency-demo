@@ -193,6 +193,15 @@ The same failing task inline on the sync connection.
 
 ![The same failing task on the sync connection](screenshots/demo-exception-sync.png)
 
+### /demo-failover
+
+A `failover` connection whose primary link is unreachable, so the chain falls
+through to `sync` and the tasks run inline in this request. A task that throws
+after the fall-through returns its own `RuntimeException`, the same as on any
+other connection, rather than the `CapturedTaskException` wrapper, and it runs
+exactly once. Without the fix a failover queue reads a task failure as a dead
+link and runs the task again on the next connection.
+
 ### /demo-timeout
 
 Tasks are sent to a queue no worker consumes, so after 3 seconds the caller receives
